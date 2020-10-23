@@ -5,8 +5,9 @@
 package texture
 
 import (
-	"github.com/g3n/engine/gls"
 	"time"
+
+	"github.com/68696c6c/engine/gls"
 )
 
 // Animator can generate a texture animation based on a texture sheet

@@ -6,9 +6,9 @@ package collada
 
 import (
 	"fmt"
-	"github.com/g3n/engine/material"
-	"github.com/g3n/engine/math32"
-	"github.com/g3n/engine/texture"
+	"github.com/68696c6c/engine/material"
+	"github.com/68696c6c/engine/math32"
+	"github.com/68696c6c/engine/texture"
 	"path/filepath"
 	"strings"
 )

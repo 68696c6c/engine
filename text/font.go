@@ -5,7 +5,7 @@
 package text
 
 import (
-	"github.com/g3n/engine/math32"
+	"github.com/68696c6c/engine/math32"
 	"github.com/golang/freetype/truetype"
 	"golang.org/x/image/font"
 	"golang.org/x/image/math/fixed"

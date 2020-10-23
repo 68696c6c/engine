@@ -4,16 +4,14 @@
 
 package constraint
 
-import (
-	"github.com/g3n/engine/experimental/physics/equation"
-)
+import "github.com/68696c6c/engine/experimental/physics/equation"
 
 // Distance is a distance constraint.
 // Constrains two bodies to be at a constant distance from each others center of mass.
 type Distance struct {
 	Constraint
-	distance   float32 // Distance
-	equation   *equation.Contact
+	distance float32 // Distance
+	equation *equation.Contact
 }
 
 // NewDistance creates and returns a pointer to a new Distance constraint object.

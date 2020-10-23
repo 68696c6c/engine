@@ -8,13 +8,14 @@ package audio
 import "C"
 
 import (
-	"github.com/g3n/engine/audio/al"
-	"github.com/g3n/engine/core"
-	"github.com/g3n/engine/gls"
-	"github.com/g3n/engine/math32"
 	"io"
 	"time"
 	"unsafe"
+
+	"github.com/68696c6c/engine/audio/al"
+	"github.com/68696c6c/engine/core"
+	"github.com/68696c6c/engine/gls"
+	"github.com/68696c6c/engine/math32"
 )
 
 const (

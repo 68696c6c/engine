@@ -11,8 +11,8 @@ import (
 	"os"
 	"runtime"
 
-	"github.com/g3n/engine/core"
-	"github.com/g3n/engine/gui/assets"
+	"github.com/68696c6c/engine/core"
+	"github.com/68696c6c/engine/gui/assets"
 	"github.com/go-gl/glfw/v3.3/glfw"
 )
 

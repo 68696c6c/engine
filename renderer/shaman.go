@@ -9,9 +9,9 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/g3n/engine/gls"
-	"github.com/g3n/engine/material"
-	"github.com/g3n/engine/renderer/shaders"
+	"github.com/68696c6c/engine/gls"
+	"github.com/68696c6c/engine/material"
+	"github.com/68696c6c/engine/renderer/shaders"
 	"strconv"
 )
 
@@ -19,6 +19,7 @@ const GLSL_VERSION = "330 core"
 
 // Regular expression to parse #include <name> [quantity] directive
 var rexInclude *regexp.Regexp
+
 const indexParameter = "{i}"
 
 func init() {
@@ -245,7 +246,6 @@ func (sm *Shaman) GenProgram(specs *ShaderSpecs) (*gls.Program, error) {
 	return prog, nil
 }
 
-
 func (sm *Shaman) preprocess(source string, defines map[string]string) (string, error) {
 
 	// If defines map supplied, generate prefix with glsl version directive first,
@@ -258,9 +258,8 @@ func (sm *Shaman) preprocess(source string, defines map[string]string) (string, 
 		}
 	}
 
-	return sm.processIncludes(prefix + source, defines)
+	return sm.processIncludes(prefix+source, defines)
 }
-
 
 // preprocess preprocesses the specified source prefixing it with optional defines directives
 // contained in "defines" parameter and replaces '#include <name>' directives

@@ -5,8 +5,8 @@
 package geometry
 
 import (
-	"github.com/g3n/engine/gls"
-	"github.com/g3n/engine/math32"
+	"github.com/68696c6c/engine/gls"
+	"github.com/68696c6c/engine/math32"
 	"math"
 )
 

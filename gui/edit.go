@@ -5,11 +5,12 @@
 package gui
 
 import (
-	"github.com/g3n/engine/math32"
-	"github.com/g3n/engine/text"
-	"github.com/g3n/engine/window"
 	"strings"
 	"time"
+
+	"github.com/68696c6c/engine/math32"
+	"github.com/68696c6c/engine/text"
+	"github.com/68696c6c/engine/window"
 )
 
 // Edit represents a text edit box GUI element
@@ -334,7 +335,7 @@ func (ed *Edit) applyStyle(s *EditStyle) {
 	ed.SetPaddingsFrom(&s.Paddings)
 	ed.Label.SetColor4(&s.FgColor)
 	ed.Label.SetBgColor4(&s.BgColor)
-	//ed.Label.SetBgAlpha(s.BgAlpha)
+	// ed.Label.SetBgAlpha(s.BgAlpha)
 
 	if !ed.focus && len(ed.text) == 0 && len(ed.placeHolder) > 0 {
 		ed.Label.SetColor4(&s.HolderColor)

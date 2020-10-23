@@ -5,9 +5,10 @@
 package geometry
 
 import (
-	"github.com/g3n/engine/gls"
-	"github.com/g3n/engine/math32"
 	"strconv"
+
+	"github.com/68696c6c/engine/gls"
+	"github.com/68696c6c/engine/math32"
 )
 
 // IGeometry is the interface for all geometries.

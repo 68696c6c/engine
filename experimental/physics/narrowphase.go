@@ -5,10 +5,10 @@
 package physics
 
 import (
-	"github.com/g3n/engine/experimental/physics/object"
-	"github.com/g3n/engine/experimental/physics/equation"
-	"github.com/g3n/engine/math32"
-	"github.com/g3n/engine/experimental/collision/shape"
+	"github.com/68696c6c/engine/experimental/collision/shape"
+	"github.com/68696c6c/engine/experimental/physics/equation"
+	"github.com/68696c6c/engine/experimental/physics/object"
+	"github.com/68696c6c/engine/math32"
 )
 
 // Narrowphase
@@ -24,10 +24,10 @@ func NewNarrowphase(simulation *Simulation) *Narrowphase {
 
 	n := new(Narrowphase)
 	n.simulation = simulation
-	//n.enableFrictionReduction = true
+	// n.enableFrictionReduction = true
 
 	// FOR DEBUGGING
-	//n.debugging = true
+	// n.debugging = true
 
 	return n
 }
@@ -41,12 +41,12 @@ func (n *Narrowphase) createFrictionEquationsFromContact(contactEquation *equati
 	// TODO materials
 	// friction = n.currentContactMaterial.friction
 	// if materials are defined then override: friction = matA.friction * matB.friction
-	//var mug = friction * world.gravity.length()
-	//var reducedMass = bodyA.InvMass() + bodyB.InvMass()
-	//if reducedMass > 0 {
+	// var mug = friction * world.gravity.length()
+	// var reducedMass = bodyA.InvMass() + bodyB.InvMass()
+	// if reducedMass > 0 {
 	//	reducedMass = 1/reducedMass
-	//}
-	slipForce := float32(0.5) //mug*reducedMass
+	// }
+	slipForce := float32(0.5) // mug*reducedMass
 
 	fricEq1 := equation.NewFriction(bodyA, bodyB, slipForce)
 	fricEq2 := equation.NewFriction(bodyA, bodyB, slipForce)
@@ -93,7 +93,7 @@ func (n *Narrowphase) createFrictionFromAverage(contactEqs []*equation.Contact) 
 	averageContactPointB := math32.NewVec3()
 
 	bodyA := lastContactEq.BodyA()
-	//bodyB := lastContactEq.BodyB()
+	// bodyB := lastContactEq.BodyB()
 	normal := lastContactEq.Normal()
 	rA := lastContactEq.RA()
 	rB := lastContactEq.RB()
@@ -149,19 +149,19 @@ func (n *Narrowphase) GenerateEquations(pairs []CollisionPair) ([]*equation.Cont
 		// For now these collisions are ignored
 		// TODO future: just want to check for collision (in order to dispatch events) and not create equations
 		justTest := (bodyTypeA == object.Kinematic) && (bodyTypeB == object.Static) ||
-				    (bodyTypeA == object.Static)    && (bodyTypeB == object.Kinematic) ||
-				    (bodyTypeA == object.Kinematic) && (bodyTypeB == object.Kinematic)
+			(bodyTypeA == object.Static) && (bodyTypeB == object.Kinematic) ||
+			(bodyTypeA == object.Kinematic) && (bodyTypeB == object.Kinematic)
 
 		// Get contacts
 		if !justTest {
-			//contactEqs, frictionEqs := n.Resolve(bodyA, bodyB)
+			// contactEqs, frictionEqs := n.Resolve(bodyA, bodyB)
 			contactEqs, frictionEqs := n.ResolveCollision(bodyA, bodyB)
 			allContactEqs = append(allContactEqs, contactEqs...)
 			allFrictionEqs = append(allFrictionEqs, frictionEqs...)
 		}
-   }
+	}
 
-   return allContactEqs, allFrictionEqs
+	return allContactEqs, allFrictionEqs
 }
 
 // ResolveCollision figures out which implementation of collision detection and contact resolution to use depending on the shapes involved.
@@ -188,7 +188,7 @@ func (n *Narrowphase) ResolveCollision(bodyA, bodyB *object.Body) ([]*equation.C
 		switch sB := shapeB.(type) {
 		case *shape.Sphere:
 			return n.SpherePlane(bodyB, bodyA, sB, sA, &posB, &posA, quatB, quatA)
-		//case *shape.Plane: // plane-plane collision never happens...
+		// case *shape.Plane: // plane-plane collision never happens...
 		//	return n.PlanePlane(bodyA, bodyB, sA, sB, &posA, &posB, quatA, quatB)
 		case *shape.ConvexHull:
 			return n.PlaneConvex(bodyA, bodyB, sA, sB, &posA, &posB, quatA, quatB)
@@ -216,7 +216,7 @@ func (n *Narrowphase) SphereSphere(bodyA, bodyB *object.Body, sphereA, sphereB *
 	radiusA := sphereA.Radius()
 	radiusB := sphereB.Radius()
 
-	if posA.DistanceToSquared(posB) > math32.Pow(radiusA + radiusB, 2) {
+	if posA.DistanceToSquared(posB) > math32.Pow(radiusA+radiusB, 2) {
 		// No collision
 		return contactEqs, frictionEqs
 	}
@@ -227,7 +227,7 @@ func (n *Narrowphase) SphereSphere(bodyA, bodyB *object.Body, sphereA, sphereB *
 	// Create contact equation
 	contactEq := equation.NewContact(bodyA, bodyB, 0, 1e6)
 	contactEq.SetSpookParams(1e6, 3, n.simulation.dt)
-	//contactEq.SetEnabled(sphereA.CollisionResponse() && sphereB.CollisionResponse()) // TODO
+	// contactEq.SetEnabled(sphereA.CollisionResponse() && sphereB.CollisionResponse()) // TODO
 	contactEq.SetNormal(penAxis.Clone())
 	contactEq.SetRA(penAxis.Clone().MultiplyScalar(radiusB))
 	contactEq.SetRB(penAxis.Clone().MultiplyScalar(-radiusB))
@@ -256,15 +256,15 @@ func (n *Narrowphase) SpherePlane(bodyA, bodyB *object.Body, sphereA *shape.Sphe
 
 	if -point_on_plane_to_sphere.Dot(normal) <= sphereRadius {
 
-		//if justTest {
+		// if justTest {
 		//	return true
-		//}
+		// }
 
 		// We will have one contact in this case
 		contactEq := equation.NewContact(bodyA, bodyB, 0, 1e6)
 		contactEq.SetSpookParams(1e6, 3, n.simulation.dt)
-		contactEq.SetNormal(normal) // Normalize() might not be needed
-		contactEq.SetRA(normal.Clone().MultiplyScalar(sphereRadius)) // Vector from sphere center to contact point
+		contactEq.SetNormal(normal)                                                                   // Normalize() might not be needed
+		contactEq.SetRA(normal.Clone().MultiplyScalar(sphereRadius))                                  // Vector from sphere center to contact point
 		contactEq.SetRB(math32.NewVec3().SubVectors(point_on_plane_to_sphere, plane_to_sphere_ortho)) // The sphere position projected to plane
 		contactEqs = append(contactEqs, contactEq)
 
@@ -283,15 +283,15 @@ func (n *Narrowphase) SphereConvex(bodyA, bodyB *object.Body, sphereA *shape.Sph
 	frictionEqs := make([]*equation.Friction, 0)
 
 	// TODO
-	//v3pool := this.v3pool
-	//convex_to_sphere := math32.NewVec3().SubVectors(posA, posB)
-    //normals := sj.faceNormals
-    //faces := sj.faces
-    //verts := sj.vertices
-    //R :=     si.radius
-    //penetrating_sides := []
+	// v3pool := this.v3pool
+	// convex_to_sphere := math32.NewVec3().SubVectors(posA, posB)
+	// normals := sj.faceNormals
+	// faces := sj.faces
+	// verts := sj.vertices
+	// R :=     si.radius
+	// penetrating_sides := []
 
-    // COMMENTED OUT
+	// COMMENTED OUT
 	// if(convex_to_sphere.norm2() > si.boundingSphereRadius + sj.boundingSphereRadius){
 	//     return;
 	// }
@@ -302,13 +302,13 @@ func (n *Narrowphase) SphereConvex(bodyA, bodyB *object.Body, sphereA *shape.Sph
 	convexB.Geometry.ReadVertices(func(vertex math32.Vector3) bool {
 		worldVertex := vertex.ApplyQuaternion(quatA).Add(posB)
 		sphereToCorner := math32.NewVec3().SubVectors(worldVertex, posA)
-		if sphereToCorner.LengthSq() < sphereRadius * sphereRadius {
+		if sphereToCorner.LengthSq() < sphereRadius*sphereRadius {
 			// Colliding! worldVertex is inside sphere.
 
 			// Create contact equation
 			contactEq := equation.NewContact(bodyA, bodyB, 0, 1e6)
 			contactEq.SetSpookParams(1e6, 3, n.simulation.dt)
-			//contactEq.SetEnabled(sphereA.CollisionResponse() && sphereB.CollisionResponse()) // TODO
+			// contactEq.SetEnabled(sphereA.CollisionResponse() && sphereB.CollisionResponse()) // TODO
 			normalizedSphereToCorner := sphereToCorner.Clone().Normalize()
 			contactEq.SetNormal(normalizedSphereToCorner)
 			contactEq.SetRA(normalizedSphereToCorner.Clone().MultiplyScalar(sphereRadius))
@@ -328,36 +328,36 @@ func (n *Narrowphase) SphereConvex(bodyA, bodyB *object.Body, sphereA *shape.Sph
 		return contactEqs, frictionEqs
 	}
 
-	//Check side (plane) intersections TODO NOTE THIS IS UNTESTED
-    convexFaces := convexB.Faces()
-    convexWorldFaceNormals := convexB.WorldFaceNormals()
-    for i := 0; i < len(convexFaces); i++ {
+	// Check side (plane) intersections TODO NOTE THIS IS UNTESTED
+	convexFaces := convexB.Faces()
+	convexWorldFaceNormals := convexB.WorldFaceNormals()
+	for i := 0; i < len(convexFaces); i++ {
 		worldNormal := convexWorldFaceNormals[i]
-     	face := convexFaces[i]
-     	// Get a world vertex from the face
-     	var worldPoint = face[0].Clone().ApplyQuaternion(quatB).Add(posB)
-     	// Get a point on the sphere, closest to the face normal
-     	var worldSpherePointClosestToPlane = worldNormal.Clone().MultiplyScalar(-sphereRadius).Add(posA)
-     	// Vector from a face point to the closest point on the sphere
-     	var penetrationVec = math32.NewVec3().SubVectors(worldSpherePointClosestToPlane, worldPoint)
-     	// The penetration. Negative value means overlap.
-     	var penetration = penetrationVec.Dot(&worldNormal)
-     	var worldPointToSphere = math32.NewVec3().SubVectors(posA, worldPoint)
-     	if penetration < 0 && worldPointToSphere.Dot(&worldNormal) > 0 {
-         	// Intersects plane. Now check if the sphere is inside the face polygon
-         	worldFace := convexB.WorldFace(face, posB, quatB)
-         	if n.pointBehindFace(worldFace, &worldNormal, posA) { // Is the sphere center behind the face (inside the convex polygon?
+		face := convexFaces[i]
+		// Get a world vertex from the face
+		var worldPoint = face[0].Clone().ApplyQuaternion(quatB).Add(posB)
+		// Get a point on the sphere, closest to the face normal
+		var worldSpherePointClosestToPlane = worldNormal.Clone().MultiplyScalar(-sphereRadius).Add(posA)
+		// Vector from a face point to the closest point on the sphere
+		var penetrationVec = math32.NewVec3().SubVectors(worldSpherePointClosestToPlane, worldPoint)
+		// The penetration. Negative value means overlap.
+		var penetration = penetrationVec.Dot(&worldNormal)
+		var worldPointToSphere = math32.NewVec3().SubVectors(posA, worldPoint)
+		if penetration < 0 && worldPointToSphere.Dot(&worldNormal) > 0 {
+			// Intersects plane. Now check if the sphere is inside the face polygon
+			worldFace := convexB.WorldFace(face, posB, quatB)
+			if n.pointBehindFace(worldFace, &worldNormal, posA) { // Is the sphere center behind the face (inside the convex polygon?
 				// TODO NEVER GETTING INSIDE THIS IF STATEMENT!
-				ShowWorldFace(n.simulation.Scene(), worldFace[:], &math32.Color{0,0,2})
+				ShowWorldFace(n.simulation.Scene(), worldFace[:], &math32.Color{0, 0, 2})
 
 				// if justTest {
-             	//    return true
-             	//}
+				//    return true
+				// }
 
 				// Create contact equation
 				contactEq := equation.NewContact(bodyA, bodyB, 0, 1e6)
 				contactEq.SetSpookParams(1e6, 3, n.simulation.dt)
-				//contactEq.SetEnabled(sphereA.CollisionResponse() && sphereB.CollisionResponse()) // TODO
+				// contactEq.SetEnabled(sphereA.CollisionResponse() && sphereB.CollisionResponse()) // TODO
 				contactEq.SetNormal(worldNormal.Clone().Negate())
 				contactEq.SetRA(worldNormal.Clone().MultiplyScalar(-sphereRadius))
 				penetrationVec2 := worldNormal.Clone().MultiplyScalar(-penetration)
@@ -368,50 +368,50 @@ func (n *Narrowphase) SphereConvex(bodyA, bodyB *object.Body, sphereA *shape.Sph
 				fEq1, fEq2 := n.createFrictionEquationsFromContact(contactEq)
 				frictionEqs = append(frictionEqs, fEq1, fEq2)
 				// Exit method (we only expect *one* face contact)
-             	return contactEqs, frictionEqs
-         	} else {
+				return contactEqs, frictionEqs
+			} else {
 				// Edge?
-             	for j := 0; j < len(worldFace); j++ {
-             		// Get two world transformed vertices
-                	v1 := worldFace[(j+1)%3].Clone()//.ApplyQuaternion(quatB).Add(posB)
-                	v2 := worldFace[(j+2)%3].Clone()//.ApplyQuaternion(quatB).Add(posB)
-                	// Construct edge vector
-                	edge := math32.NewVec3().SubVectors(v2, v1)
-                	// Construct the same vector, but normalized
-                	edgeUnit := edge.Clone().Normalize()
-                	// p is xi projected onto the edge
-                	v1ToPosA := math32.NewVec3().SubVectors(posA, v1)
-                	dot := v1ToPosA.Dot(edgeUnit)
+				for j := 0; j < len(worldFace); j++ {
+					// Get two world transformed vertices
+					v1 := worldFace[(j+1)%3].Clone() // .ApplyQuaternion(quatB).Add(posB)
+					v2 := worldFace[(j+2)%3].Clone() // .ApplyQuaternion(quatB).Add(posB)
+					// Construct edge vector
+					edge := math32.NewVec3().SubVectors(v2, v1)
+					// Construct the same vector, but normalized
+					edgeUnit := edge.Clone().Normalize()
+					// p is xi projected onto the edge
+					v1ToPosA := math32.NewVec3().SubVectors(posA, v1)
+					dot := v1ToPosA.Dot(edgeUnit)
 					p := edgeUnit.Clone().MultiplyScalar(dot).Add(v1)
-                	// Compute a vector from p to the center of the sphere
-                	var posAtoP = math32.NewVec3().SubVectors(p, posA)
-                	// Collision if the edge-sphere distance is less than the radius AND if p is in between v1 and v2
-                	edgeL2 := edge.LengthSq()
-                	patp2 := posAtoP.LengthSq()
-                	if (dot > 0) && (dot*dot < edgeL2) && (patp2 < sphereRadius*sphereRadius) { // Collision if the edge-sphere distance is less than the radius
-                	   // Edge contact!
-                	   //if justTest {
-                	   //    return true
-                	   //}
+					// Compute a vector from p to the center of the sphere
+					var posAtoP = math32.NewVec3().SubVectors(p, posA)
+					// Collision if the edge-sphere distance is less than the radius AND if p is in between v1 and v2
+					edgeL2 := edge.LengthSq()
+					patp2 := posAtoP.LengthSq()
+					if (dot > 0) && (dot*dot < edgeL2) && (patp2 < sphereRadius*sphereRadius) { // Collision if the edge-sphere distance is less than the radius
+						// Edge contact!
+						// if justTest {
+						//    return true
+						// }
 						// Create contact equation
 						contactEq := equation.NewContact(bodyA, bodyB, 0, 1e6)
 						contactEq.SetSpookParams(1e6, 3, n.simulation.dt)
-						//contactEq.SetEnabled(sphereA.CollisionResponse() && sphereB.CollisionResponse()) // TODO
+						// contactEq.SetEnabled(sphereA.CollisionResponse() && sphereB.CollisionResponse()) // TODO
 						normal := p.Clone().Sub(posA).Normalize()
 						contactEq.SetNormal(normal)
 						contactEq.SetRA(normal.Clone().MultiplyScalar(sphereRadius))
 						contactEq.SetRB(p.Clone().Sub(posB))
 						contactEqs = append(contactEqs, contactEq)
 						// Create friction equations
-						//fEq1, fEq2 := n.createFrictionEquationsFromContact(contactEq)
-						//frictionEqs = append(frictionEqs, fEq1, fEq2)
+						// fEq1, fEq2 := n.createFrictionEquationsFromContact(contactEq)
+						// frictionEqs = append(frictionEqs, fEq1, fEq2)
 						// Exit method (we only expect *one* edge contact)
 						return contactEqs, frictionEqs
-                	}
-             	}
+					}
+				}
 			}
-     	}
-    }
+		}
+	}
 
 	return contactEqs, frictionEqs
 }
@@ -429,7 +429,7 @@ func (n *Narrowphase) pointBehindFace(worldFace [3]math32.Vector3, faceNormal, p
 }
 
 // Checks if a given point is inside the polygon. I believe this is a generalization of checking whether a point is behind a face/plane when the face has more than 3 vertices.
-//func (n *Narrowphase) pointInPolygon(verts []math32.Vector3, normal, p *math32.Vector3) bool {
+// func (n *Narrowphase) pointInPolygon(verts []math32.Vector3, normal, p *math32.Vector3) bool {
 //
 //	firstTime := true
 //    positiveResult := true // first value of positive result doesn't matter
@@ -457,7 +457,7 @@ func (n *Narrowphase) pointBehindFace(worldFace [3]math32.Vector3, faceNormal, p
 //    }
 //    // If we got here, all dot products were of the same sign.
 //    return true
-//}
+// }
 
 // ConvexConvex implements collision detection and contact resolution between two convex hulls.
 func (n *Narrowphase) ConvexConvex(bodyA, bodyB *object.Body, convexA, convexB *shape.ConvexHull, posA, posB *math32.Vector3, quatA, quatB *math32.Quaternion) ([]*equation.Contact, []*equation.Friction) {
@@ -472,7 +472,7 @@ func (n *Narrowphase) ConvexConvex(bodyA, bodyB *object.Body, convexA, convexB *
 	}
 
 	if n.debugging {
-		ShowPenAxis(n.simulation.Scene(), &penAxis) //, -1000, 1000)
+		ShowPenAxis(n.simulation.Scene(), &penAxis) // , -1000, 1000)
 		log.Error("Colliding (%v|%v) penAxis: %v", bodyA.Name(), bodyB.Name(), penAxis)
 	}
 
@@ -510,16 +510,15 @@ func (n *Narrowphase) ConvexConvex(bodyA, bodyB *object.Body, convexA, convexB *
 	// If we only have one contact however, then friction is small and we don't need to create the friction equations at all.
 	// TODO
 	if n.enableFrictionReduction && len(contactEqs) > 1 {
-		//fEq1, fEq2 := n.createFrictionFromAverage(contactEqs)
-		//frictionEqs = append(frictionEqs, fEq1, fEq2)
+		// fEq1, fEq2 := n.createFrictionFromAverage(contactEqs)
+		// frictionEqs = append(frictionEqs, fEq1, fEq2)
 	}
 
 	return contactEqs, frictionEqs
 }
 
-
-//// TODO ?
-//func (n *Narrowphase) GetAveragePointLocal(target) {
+// // TODO ?
+// func (n *Narrowphase) GetAveragePointLocal(target) {
 //
 //	target = target || new Vec3()
 //   n := this.vertices.length
@@ -529,14 +528,13 @@ func (n *Narrowphase) ConvexConvex(bodyA, bodyB *object.Body, convexA, convexB *
 //   }
 //   target.mult(1/n,target)
 //   return target
-//}
-
+// }
 
 // Checks whether p is inside the polyhedra. Must be in local coords.
 // The point lies outside of the convex hull of the other points if and only if
 // the direction of all the vectors from it to those other points are on less than one half of a sphere around it.
 // p is A point given in local coordinates
-//func (n *Narrowphase) PointIsInside(p) {
+// func (n *Narrowphase) PointIsInside(p) {
 //
 //	verts := this.vertices
 //	faces := this.faces
@@ -566,7 +564,7 @@ func (n *Narrowphase) ConvexConvex(bodyA, bodyB *object.Body, convexA, convexB *
 //
 //  // If we got here, all dot products were of the same sign.
 //  return positiveResult ? 1 : -1
-//}
+// }
 
 // TODO
 func (n *Narrowphase) PlaneConvex(bodyA, bodyB *object.Body, planeA *shape.Plane, convexB *shape.ConvexHull, posA, posB *math32.Vector3, quatA, quatB *math32.Quaternion) ([]*equation.Contact, []*equation.Friction) {
@@ -574,70 +572,70 @@ func (n *Narrowphase) PlaneConvex(bodyA, bodyB *object.Body, planeA *shape.Plane
 	contactEqs := make([]*equation.Contact, 0)
 	frictionEqs := make([]*equation.Friction, 0)
 
-	//planeShape,
-	//convexShape,
-	//planePosition,
-	//convexPosition,
-	//planeQuat,
-	//convexQuat,
-	//planeBody,
-	//convexBody,
-	//si,
-	//sj,
-	//justTest) {
-   //
-	//// Simply return the points behind the plane.
-   //worldVertex := planeConvex_v
-   //worldNormal := planeConvex_normal
-   //worldNormal.set(0,0,1)
-   //planeQuat.vmult(worldNormal,worldNormal) // Turn normal according to plane orientation
-   //
-   //var numContacts = 0
-   //var relpos = planeConvex_relpos
-   //for i := 0; i < len(convexShape.vertices); i++ {
-   //
-   //    // Get world convex vertex
-   //    worldVertex.copy(convexShape.vertices[i])
-   //    convexQuat.vmult(worldVertex, worldVertex)
-   //    convexPosition.vadd(worldVertex, worldVertex)
-   //    worldVertex.vsub(planePosition, relpos)
-   //
-   //    var dot = worldNormal.dot(relpos)
-   //    if dot <= 0.0 {
-   //        if justTest {
-   //            return true
-   //        }
-   //
-   //        var r = this.createContactEquation(planeBody, convexBody, planeShape, convexShape, si, sj)
-   //
-   //        // Get vertex position projected on plane
-   //        var projected = planeConvex_projected
-   //        worldNormal.mult(worldNormal.dot(relpos),projected)
-   //        worldVertex.vsub(projected, projected)
-   //        projected.vsub(planePosition, r.ri) // From plane to vertex projected on plane
-   //
-   //        r.ni.copy(worldNormal) // Contact normal is the plane normal out from plane
-   //
-   //        // rj is now just the vector from the convex center to the vertex
-   //        worldVertex.vsub(convexPosition, r.rj)
-   //
-   //        // Make it relative to the body
-   //        r.ri.vadd(planePosition, r.ri)
-   //        r.ri.vsub(planeBody.position, r.ri)
-   //        r.rj.vadd(convexPosition, r.rj)
-   //        r.rj.vsub(convexBody.position, r.rj)
-   //
-   //        this.result.push(r)
-   //        numContacts++
-   //        if !this.enableFrictionReduction {
-   //            this.createFrictionEquationsFromContact(r, this.frictionResult)
-   //        }
-   //    }
-   //}
-   //
-   //if this.enableFrictionReduction && numContacts {
-   //    this.createFrictionFromAverage(numContacts)
-   //}
+	// planeShape,
+	// convexShape,
+	// planePosition,
+	// convexPosition,
+	// planeQuat,
+	// convexQuat,
+	// planeBody,
+	// convexBody,
+	// si,
+	// sj,
+	// justTest) {
+	//
+	// // Simply return the points behind the plane.
+	// worldVertex := planeConvex_v
+	// worldNormal := planeConvex_normal
+	// worldNormal.set(0,0,1)
+	// planeQuat.vmult(worldNormal,worldNormal) // Turn normal according to plane orientation
+	//
+	// var numContacts = 0
+	// var relpos = planeConvex_relpos
+	// for i := 0; i < len(convexShape.vertices); i++ {
+	//
+	//    // Get world convex vertex
+	//    worldVertex.copy(convexShape.vertices[i])
+	//    convexQuat.vmult(worldVertex, worldVertex)
+	//    convexPosition.vadd(worldVertex, worldVertex)
+	//    worldVertex.vsub(planePosition, relpos)
+	//
+	//    var dot = worldNormal.dot(relpos)
+	//    if dot <= 0.0 {
+	//        if justTest {
+	//            return true
+	//        }
+	//
+	//        var r = this.createContactEquation(planeBody, convexBody, planeShape, convexShape, si, sj)
+	//
+	//        // Get vertex position projected on plane
+	//        var projected = planeConvex_projected
+	//        worldNormal.mult(worldNormal.dot(relpos),projected)
+	//        worldVertex.vsub(projected, projected)
+	//        projected.vsub(planePosition, r.ri) // From plane to vertex projected on plane
+	//
+	//        r.ni.copy(worldNormal) // Contact normal is the plane normal out from plane
+	//
+	//        // rj is now just the vector from the convex center to the vertex
+	//        worldVertex.vsub(convexPosition, r.rj)
+	//
+	//        // Make it relative to the body
+	//        r.ri.vadd(planePosition, r.ri)
+	//        r.ri.vsub(planeBody.position, r.ri)
+	//        r.rj.vadd(convexPosition, r.rj)
+	//        r.rj.vsub(convexBody.position, r.rj)
+	//
+	//        this.result.push(r)
+	//        numContacts++
+	//        if !this.enableFrictionReduction {
+	//            this.createFrictionEquationsFromContact(r, this.frictionResult)
+	//        }
+	//    }
+	// }
+	//
+	// if this.enableFrictionReduction && numContacts {
+	//    this.createFrictionFromAverage(numContacts)
+	// }
 
-   return contactEqs, frictionEqs
+	return contactEqs, frictionEqs
 }

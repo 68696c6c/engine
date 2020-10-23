@@ -19,15 +19,15 @@ import (
 	"strings"
 	"unsafe"
 
-	"github.com/g3n/engine/camera"
-	"github.com/g3n/engine/core"
-	"github.com/g3n/engine/geometry"
-	"github.com/g3n/engine/gls"
-	"github.com/g3n/engine/graphic"
-	"github.com/g3n/engine/material"
-	"github.com/g3n/engine/math32"
-	"github.com/g3n/engine/texture"
-	"github.com/g3n/engine/animation"
+	"github.com/68696c6c/engine/animation"
+	"github.com/68696c6c/engine/camera"
+	"github.com/68696c6c/engine/core"
+	"github.com/68696c6c/engine/geometry"
+	"github.com/68696c6c/engine/gls"
+	"github.com/68696c6c/engine/graphic"
+	"github.com/68696c6c/engine/material"
+	"github.com/68696c6c/engine/math32"
+	"github.com/68696c6c/engine/texture"
 )
 
 // ParseJSON parses the glTF data from the specified JSON file
@@ -297,7 +297,7 @@ func (g *GLTF) LoadSkin(skinIdx int) (*graphic.Skeleton, error) {
 			return nil, err
 		}
 		var ibm math32.Matrix4
-		ibmData.GetMatrix4(16 * i, &ibm)
+		ibmData.GetMatrix4(16*i, &ibm)
 		skeleton.AddBone(jointNode.GetNode(), &ibm)
 	}
 
@@ -404,7 +404,7 @@ func (g *GLTF) LoadCamera(camIdx int) (core.INode, error) {
 		if desc.AspectRatio != nil {
 			aspect = *desc.AspectRatio
 		}
-		far := float32(2E6)
+		far := float32(2e6)
 		if desc.Zfar != nil {
 			far = *desc.Zfar
 		}
@@ -703,7 +703,7 @@ func (g *GLTF) LoadMaterial(matIdx int) (material.IMaterial, error) {
 				imat, err = g.loadMaterialCommon(extData)
 			} else if ext == KhrMaterialsUnlit {
 				//imat, err = g.loadMaterialUnlit(matData, extData)
-			//} else if ext == KhrMaterialsPbrSpecularGlossiness {
+				//} else if ext == KhrMaterialsPbrSpecularGlossiness {
 			} else {
 				return nil, fmt.Errorf("unsupported extension:%s", ext)
 			}

@@ -7,9 +7,9 @@ package material
 import (
 	"unsafe"
 
-	"github.com/g3n/engine/gls"
-	"github.com/g3n/engine/math32"
-	"github.com/g3n/engine/texture"
+	"github.com/68696c6c/engine/gls"
+	"github.com/68696c6c/engine/math32"
+	"github.com/68696c6c/engine/texture"
 )
 
 // Physical is a physically based rendered material which uses the metallic-roughness model.

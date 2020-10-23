@@ -4,9 +4,7 @@
 
 package core
 
-import (
-	"github.com/g3n/engine/math32"
-)
+import "github.com/68696c6c/engine/math32"
 
 // RenderInfo is passed into Render/RenderSetup calls
 type RenderInfo struct {

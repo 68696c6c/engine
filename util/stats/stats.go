@@ -1,9 +1,10 @@
 package stats
 
 import (
-	"github.com/g3n/engine/gls"
 	"runtime"
 	"time"
+
+	"github.com/68696c6c/engine/gls"
 )
 
 // Stats contains several statistics useful for performance evaluation
