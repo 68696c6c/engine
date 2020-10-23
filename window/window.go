@@ -8,7 +8,7 @@ package window
 
 import (
 	"github.com/g3n/engine/core"
-	"github.com/go-gl/glfw/v3.2/glfw"
+	"github.com/go-gl/glfw/v3.3/glfw"
 )
 
 // IWindowManager is the interface for all window managers
